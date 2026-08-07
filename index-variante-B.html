@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Cotizá tu plan de salud - Mutual Cosecha Salud</title>
+<style>
+  :root {
+    --green-dark: #2F6B3A;
+    --green-med: #4C8C56;
+    --green-light: #E9F3E8;
+    --cream: #FAFAF7;
+    --text: #1A2E1F;
+    --text-soft: #5C6B5F;
+    --border: #D8E3D9;
+    --amber: #8A5A00;
+    --amber-bg: #FFF6E5;
+    --gold: #B7862B;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .app {
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100vh;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 10;
+  }
+  header .brand { display: flex; align-items: center; gap: 8px; }
+  header .brand .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green-med); flex-shrink: 0; }
+  header .brand span { font-size: 13px; font-weight: 700; letter-spacing: 0.4px; color: var(--green-dark); text-transform: uppercase; }
+  header h1 { font-size: 17px; margin: 8px 0 2px; color: var(--text); font-weight: 700; }
+  .progress-wrap { padding: 12px 20px 0; }
+  .progress-track { height: 6px; background: var(--green-light); border-radius: 4px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--green-med); border-radius: 4px; transition: width 0.25s ease; }
+  .progress-label { font-size: 12px; color: var(--text-soft); margin: 6px 0 0; text-align: right; }
+  main { flex: 1; padding: 18px 20px 24px; }
+  .step { display: none; animation: fadeIn 0.2s ease; }
+  .step.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+  .step h2 { font-size: 19px; color: var(--green-dark); margin: 0 0 4px; }
+  .step .sub { font-size: 13px; color: var(--text-soft); margin: 0 0 18px; }
+  label { display: block; font-size: 13.5px; font-weight: 600; color: var(--text); margin: 16px 0 6px; }
+  label.first { margin-top: 0; }
+  input[type="text"], input[type="number"], input[type="tel"], select {
+    width: 100%; padding: 12px 13px; font-size: 16px; border: 1.5px solid var(--border);
+    border-radius: 10px; background: var(--cream); color: var(--text); font-family: inherit;
+  }
+  input:focus, select:focus { outline: none; border-color: var(--green-med); background: #fff; }
+  .radio-group { display: flex; gap: 10px; margin-top: 4px; flex-wrap: wrap; }
+  .radio-pill {
+    flex: 1; min-width: 80px; text-align: center; padding: 11px 10px;
+    border: 1.5px solid var(--border); border-radius: 10px; font-size: 14px;
+    font-weight: 600; color: var(--text-soft); cursor: pointer; background: var(--cream);
+    user-select: none;
+  }
+  .radio-pill.selected { background: var(--green-dark); border-color: var(--green-dark); color: #fff; }
+  .hint { font-size: 12px; color: var(--text-soft); margin-top: 6px; line-height: 1.4; }
+  .conditional { display: none; }
+  .conditional.show { display: block; }
+  input.invalid, select.invalid { border-color: #9C2B2B !important; background: #FBEAEA !important; }
+  .radio-group.invalid .radio-pill { border-color: #9C2B2B; }
+  .step-error {
+    display: none; background: #FBEAEA; border: 1px solid #9C2B2B; color: #9C2B2B;
+    border-radius: 10px; padding: 10px 12px; font-size: 12.5px; margin-bottom: 14px; line-height: 1.4;
+  }
+  .step-error.show { display: block; }
+  .plans { margin-top: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .plan-card { border: 1.5px solid var(--border); border-radius: 14px; padding: 14px 15px; cursor: pointer; transition: border-color .15s, background .15s; }
+  .plan-card.selected { border-color: var(--green-dark); background: var(--green-light); }
+  .plan-card .plan-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .plan-card h3 { margin: 0; font-size: 15.5px; color: var(--text); }
+  .plan-card .badge { font-size: 10.5px; font-weight: 700; color: #fff; background: var(--green-med); padding: 3px 8px; border-radius: 999px; letter-spacing: .3px; white-space: nowrap; }
+  .plan-card .badge.gold { background: var(--gold); }
+  .plan-card p { margin: 6px 0 0; font-size: 12.5px; color: var(--text-soft); line-height: 1.45; }
+  .plan-card .check { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--border); flex-shrink: 0; position: relative; }
+  .plan-card.selected .check { border-color: var(--green-dark); background: var(--green-dark); }
+  .plan-card.selected .check::after { content: ""; position: absolute; left: 6px; top: 2px; width: 5px; height: 10px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+  .family-card { border: 1.5px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+  .family-card .fc-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .family-card .fc-head span { font-size: 12.5px; font-weight: 700; color: var(--green-dark); }
+  .family-remove { background: none; border: none; color: #9C2B2B; font-size: 20px; cursor: pointer; padding: 0 4px; line-height: 1; }
+  .family-card input, .family-card select { padding: 9px 10px; font-size: 14px; margin-top: 0; }
+  .fc-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .fc-grid2 label { font-size: 11.5px; margin: 0 0 4px; }
+  .add-family {
+    margin-top: 4px; background: var(--green-light); border: 1.5px dashed var(--green-med);
+    color: var(--green-dark); font-weight: 600; font-size: 13.5px; padding: 10px; border-radius: 10px;
+    width: 100%; cursor: pointer;
+  }
+  footer {
+    max-width: 480px; margin: 0 auto; background: #fff; border-top: 1px solid var(--border);
+    padding: 16px 20px calc(16px + env(safe-area-inset-bottom));
+    display: flex; gap: 10px;
+  }
+  button.nav-btn { flex: 1; padding: 14px; font-size: 15px; font-weight: 700; border-radius: 12px; border: none; cursor: pointer; }
+  .btn-back { background: var(--green-light); color: var(--green-dark); }
+  .btn-next { background: var(--green-dark); color: #fff; }
+  .success { display: none; text-align: center; padding: 60px 24px; }
+  .success.show { display: block; }
+  .success .check-big { width: 62px; height: 62px; border-radius: 50%; background: var(--green-dark); margin: 0 auto 18px; position: relative; }
+  .success .check-big::after { content: ""; position: absolute; left: 21px; top: 14px; width: 12px; height: 24px; border: solid #fff; border-width: 0 3px 3px 0; transform: rotate(45deg); }
+  .success h2 { color: var(--green-dark); font-size: 22px; margin: 0 0 14px; }
+  .success .success-msg {
+    color: var(--green-dark); font-size: 20px; font-weight: 800; line-height: 1.4;
+    margin: 0 0 26px; letter-spacing: 0.2px;
+  }
+  .wa-btn { display: inline-block; background: #25D366; color: #fff; font-weight: 700; text-decoration: none; padding: 13px 22px; border-radius: 12px; font-size: 14.5px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand"><span class="dot"></span><span>Mutual Cosecha Salud</span></div>
+    <h1>Cotizá tu plan en 2 minutos</h1>
+  </header>
+
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:33.3%"></div></div>
+    <p class="progress-label" id="progressLabel">Paso 1 de 3</p>
+  </div>
+
+  <main id="mainForm">
+    <div class="step-error" id="stepError"></div>
+
+    <section class="step active" data-step="1">
+      <h2>Tus datos</h2>
+      <p class="sub">Para que la asesora sepa a quién contactar.</p>
+      <label class="first">Nombre y apellido *</label>
+      <input type="text" id="f_nombre" placeholder="Ej: Maria Gomez">
+      <label>Edad *</label>
+      <input type="number" id="f_edad" placeholder="Ej: 34" min="0" max="110">
+      <label>Sexo *</label>
+      <div class="radio-group" data-radio="f_sexo">
+        <div class="radio-pill" data-value="Femenino">Femenino</div>
+        <div class="radio-pill" data-value="Masculino">Masculino</div>
+        <div class="radio-pill" data-value="Otro">Otro</div>
+      </div>
+      <label>Localidad *</label>
+      <input type="text" id="f_localidad" placeholder="Ej: Resistencia">
+      <label>Celular *</label>
+      <input type="tel" id="f_celular" inputmode="numeric" placeholder="Ej: 3644123456">
+      <p class="hint">Sin 0 ni 15 adelante. Solo código de área + número. Ej: 3644123456</p>
+    </section>
+
+    <section class="step" data-step="2">
+      <h2>Elegí tu plan</h2>
+      <p class="sub">Decinos tu situación y te mostramos las opciones que te corresponden.</p>
+      <label class="first">¿Sos monotributista? *</label>
+      <div class="radio-group" data-radio="f_monotributo">
+        <div class="radio-pill" data-value="Sí">Sí</div>
+        <div class="radio-pill" data-value="No">No</div>
+      </div>
+
+      <div class="plans conditional" id="plans_mono">
+        <div class="plan-card" data-plan="Integral Monotributista">
+          <div class="plan-top">
+            <h3>Integral Monotributista</h3>
+            <span class="badge gold">Para monotributistas</span>
+          </div>
+          <p>Consultas ambulatorias 100%. Prácticas y kinesiología con autorización. Incluye asistencia al viajero, nacional e internacional.</p>
+        </div>
+      </div>
+
+      <div class="plans conditional" id="plans_general">
+        <div class="plan-card" data-plan="Integral">
+          <div class="plan-top"><div style="display:flex;align-items:center;gap:8px;"><div class="check"></div><h3>Integral</h3></div><span class="badge">Recomendado</span></div>
+          <p>Consultas médicas ambulatorias 100%. Prácticas, kinesiología e internaciones con autorización. Farmacia propia con 30% de descuento.</p>
+        </div>
+        <div class="plan-card" data-plan="Premium">
+          <div class="plan-top"><div style="display:flex;align-items:center;gap:8px;"><div class="check"></div><h3>Premium</h3></div></div>
+          <p>Consultas ambulatorias 100% sin coseguro. Prácticas y kinesiología 100% con autorización. Internaciones sin copago.</p>
+        </div>
+        <div class="plan-card" data-plan="VIP Dorado">
+          <div class="plan-top"><div style="display:flex;align-items:center;gap:8px;"><div class="check"></div><h3>VIP Dorado</h3></div><span class="badge gold">Máxima cobertura</span></div>
+          <p>Consultas sin necesidad de órdenes. Prácticas y kinesiología 100% sin autorización. Internaciones sin copago.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="step" data-step="3">
+      <h2>Integrantes y salud</h2>
+      <p class="sub">Últimos datos, simples y rápidos.</p>
+
+      <label class="first">Tipo de cobertura *</label>
+      <div class="radio-group" data-radio="f_tipo">
+        <div class="radio-pill" data-value="Unipersonal">Unipersonal</div>
+        <div class="radio-pill" data-value="Grupo">Grupo</div>
+      </div>
+
+      <div class="conditional" id="familia_block">
+        <label class="first" style="margin-top: 14px;">¿Cuántos integrantes sumás al grupo?</label>
+        <div id="family_rows" style="margin-top: 8px;"></div>
+        <button type="button" class="add-family" id="add_family_btn">+ Agregar integrante</button>
+      </div>
+
+      <label class="first" style="margin-top: 24px;">¿Alguien de ustedes tiene alguna patología? *</label>
+      <div class="radio-group" data-radio="f_patologia">
+        <div class="radio-pill" data-value="Sí">Sí</div>
+        <div class="radio-pill" data-value="No">No</div>
+      </div>
+      <label>¿Alguien toma medicación de forma habitual? *</label>
+      <div class="radio-group" data-radio="f_medicacion">
+        <div class="radio-pill" data-value="Sí">Sí</div>
+        <div class="radio-pill" data-value="No">No</div>
+      </div>
+
+      <label class="first" style="margin-top: 24px;">Horario disponible para contacto (opcional)</label>
+      <div class="radio-group" data-radio="f_horario">
+        <div class="radio-pill" data-value="Mañana">Mañana</div>
+        <div class="radio-pill" data-value="Mediodía">Mediodía</div>
+        <div class="radio-pill" data-value="Tarde">Tarde</div>
+        <div class="radio-pill" data-value="Noche">Noche</div>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="success" id="successScreen">
+    <div class="check-big"></div>
+    <h2>¡Listo!</h2>
+    <p class="success-msg">Nuestra asesora te contactará a la brevedad para brindarte la cotización.</p>
+    <a href="#" id="waFallback" class="wa-btn" target="_blank" rel="noopener" style="display:none;">Tocá para continuar por WhatsApp</a>
+  </div>
+
+  <footer id="footerNav">
+    <button type="button" class="nav-btn btn-back" id="backBtn" style="display:none;">Atrás</button>
+    <button type="button" class="nav-btn btn-next" id="nextBtn">Siguiente</button>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var WHATSAPP_NUMBER = "5493644000000";
+  var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxwWf-AhYeVCXy7KfPVeL2z5fH6si795Ft_Zk1_6kwaPpScJl7T9Du9DiftIASIdv2WbQ/exec";
+
+  var totalSteps = 3;
+  var current = 1;
+  var familyCount = 0;
+  var selectedPlan = null;
+
+  function $(id){ return document.getElementById(id); }
+  function qsa(sel, ctx){ return Array.prototype.slice.call((ctx||document).querySelectorAll(sel)); }
+
+  var params = new URLSearchParams(window.location.search);
+  var rawSrc = (params.get('src') || params.get('utm_source') || '').toLowerCase();
+  var origenMap = { ig:'Instagram', instagram:'Instagram', fb:'Facebook', facebook:'Facebook',
+                     web:'Sitio web', whatsapp:'WhatsApp', referido:'Referido' };
+  var origen = origenMap[rawSrc] || (rawSrc ? rawSrc : 'Directo / Otro');
+
+  qsa('#f_nombre, #f_edad, #f_localidad, #f_celular').forEach(function(el){
+    el.addEventListener('input', validateStep);
+  });
+  $('f_celular').addEventListener('blur', function(){
+    this.value = limpiarCelular(this.value);
+  });
+
+  qsa('.radio-group').forEach(function(group){
+    var key = group.getAttribute('data-radio');
+    qsa('.radio-pill', group).forEach(function(pill){
+      pill.addEventListener('click', function(){
+        qsa('.radio-pill', group).forEach(function(p){ p.classList.remove('selected'); });
+        pill.classList.add('selected');
+        group.setAttribute('data-selected', pill.getAttribute('data-value'));
+        handleConditional(key, pill.getAttribute('data-value'));
+        validateStep();
+      });
+    });
+  });
+
+  function handleConditional(key, value){
+    if (key === 'f_monotributo') {
+      selectedPlan = null;
+      qsa('.plan-card').forEach(function(c){ c.classList.remove('selected'); });
+      if (value === 'Sí') {
+        $('plans_mono').classList.add('show');
+        $('plans_general').classList.remove('show');
+        selectedPlan = 'Integral Monotributista';
+        qsa('.plan-card', $('plans_mono'))[0].classList.add('selected');
+      } else {
+        $('plans_general').classList.add('show');
+        $('plans_mono').classList.remove('show');
+      }
+    }
+    if (key === 'f_tipo') {
+      $('familia_block').classList.toggle('show', value === 'Grupo');
+      if (value !== 'Grupo') {
+        $('family_rows').innerHTML = '';
+        familyCount = 0;
+      }
+    }
+  }
+
+  qsa('#plans_general .plan-card').forEach(function(card){
+    card.addEventListener('click', function(){
+      qsa('#plans_general .plan-card').forEach(function(c){ c.classList.remove('selected'); });
+      card.classList.add('selected');
+      selectedPlan = card.getAttribute('data-plan');
+      validateStep();
+    });
+  });
+
+  function renumberFamilyCards(){
+    qsa('.family-card').forEach(function(card, i){
+      card.querySelector('.fc-head span').textContent = 'Integrante ' + (i + 1);
+    });
+  }
+
+  function addFamilyRow(){
+    familyCount++;
+    var card = document.createElement('div');
+    card.className = 'family-card';
+    card.innerHTML =
+      '<div class="fc-head"><span>Integrante</span><button type="button" class="family-remove">&times;</button></div>' +
+      '<div class="fc-grid2">' +
+        '<div><label>Edad</label><input type="number" class="fam_edad" min="0" max="110"></div>' +
+      '</div>';
+    card.querySelector('.family-remove').addEventListener('click', function(){
+      card.remove();
+      renumberFamilyCards();
+      validateStep();
+    });
+    qsa('input, select', card).forEach(function(el){
+      el.addEventListener('input', validateStep);
+      el.addEventListener('change', validateStep);
+    });
+    $('family_rows').appendChild(card);
+    renumberFamilyCards();
+    validateStep();
+  }
+  $('add_family_btn').addEventListener('click', addFamilyRow);
+
+  function getFamilyData(){
+    return qsa('.family-card').map(function(card){
+      return {
+        edad: card.querySelector('.fam_edad').value.trim()
+      };
+    });
+  }
+
+  function limpiarCelular(v){
+    var digits = (v || '').replace(/[^0-9]/g, '');
+    if (digits.charAt(0) === '0') digits = digits.substring(1);
+    return digits;
+  }
+
+  function radioVal(key){
+    var g = document.querySelector('.radio-group[data-radio="' + key + '"]');
+    return g ? (g.getAttribute('data-selected') || '') : '';
+  }
+
+  function marcarInvalido(id, isGroup){
+    var el = isGroup ? document.querySelector('.radio-group[data-radio="' + id + '"]') : $(id);
+    if (el) el.classList.add('invalid');
+  }
+  function limpiarInvalido(id, isGroup){
+    var el = isGroup ? document.querySelector('.radio-group[data-radio="' + id + '"]') : $(id);
+    if (el) el.classList.remove('invalid');
+  }
+
+  function validateStep(opts){
+    opts = opts || {};
+    var mostrarErrores = !!opts.mostrarErrores;
+    var faltantes = [];
+
+    function check(id, val, label, isGroup){
+      var vacio = !val;
+      if (vacio) {
+        faltantes.push(label);
+        if (mostrarErrores) marcarInvalido(id, isGroup);
+      } else {
+        limpiarInvalido(id, isGroup);
+      }
+    }
+
+    if (current === 1) {
+      check('f_nombre', $('f_nombre').value.trim(), 'Nombre y apellido');
+      check('f_edad', $('f_edad').value, 'Edad');
+      check('f_sexo', radioVal('f_sexo'), 'Sexo', true);
+      check('f_localidad', $('f_localidad').value.trim(), 'Localidad');
+      check('f_celular', $('f_celular').value.trim(), 'Celular');
+    } else if (current === 2) {
+      check('f_monotributo', radioVal('f_monotributo'), 'Si sos monotributista', true);
+      if (radioVal('f_monotributo') && !selectedPlan) faltantes.push('Elegir un plan');
+    } else if (current === 3) {
+      check('f_tipo', radioVal('f_tipo'), 'Tipo de cobertura', true);
+      var tipo = radioVal('f_tipo');
+      if (tipo === 'Grupo') {
+        var filas = qsa('.family-card');
+        if (filas.length === 0) {
+          faltantes.push('Agregar al menos un integrante');
+        } else {
+          filas.forEach(function(card, i){
+            var edadEl = card.querySelector('.fam_edad');
+            var edadVacia = !edadEl.value.trim();
+            if (edadVacia) {
+              faltantes.push('Edad del integrante ' + (i + 1));
+              if (mostrarErrores) edadEl.classList.add('invalid');
+            } else {
+              edadEl.classList.remove('invalid');
+            }
+          });
+        }
+      }
+      check('f_patologia', radioVal('f_patologia'), 'Patología', true);
+      check('f_medicacion', radioVal('f_medicacion'), 'Medicación', true);
+    }
+
+    var ok = faltantes.length === 0;
+    var box = $('stepError');
+    if (mostrarErrores && !ok) {
+      box.textContent = 'Faltan completar: ' + faltantes.join(', ') + '.';
+      box.classList.add('show');
+      box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else if (ok) {
+      box.classList.remove('show');
+    }
+    return ok;
+  }
+
+  function buildSummary(){
+    var tipo = radioVal('f_tipo');
+    var lines = [
+      '*Nueva solicitud de cotización - MCS*',
+      'Origen: ' + origen,
+      '',
+      'Nombre: ' + $('f_nombre').value.trim(),
+      'Edad: ' + $('f_edad').value + '  |  Sexo: ' + radioVal('f_sexo'),
+      'Localidad: ' + $('f_localidad').value.trim(),
+      'Celular: ' + limpiarCelular($('f_celular').value),
+      '',
+      'Monotributista: ' + radioVal('f_monotributo'),
+      'Plan de interés: ' + selectedPlan,
+      '',
+      'Cobertura: ' + tipo
+    ];
+    if (tipo === 'Grupo') {
+      getFamilyData().forEach(function(f, i){
+        lines.push('  Integrante ' + (i + 1) + ': ' + f.edad + ' años');
+      });
+    }
+    lines.push('');
+    lines.push('Patología en el grupo: ' + radioVal('f_patologia'));
+    lines.push('Medicación habitual en el grupo: ' + radioVal('f_medicacion'));
+    if (radioVal('f_horario')) {
+      lines.push('Horario disponible: ' + radioVal('f_horario'));
+    }
+    return lines.join('\n');
+  }
+
+  function goToStep(n){
+    qsa('.step').forEach(function(s){ s.classList.remove('active'); });
+    document.querySelector('.step[data-step="' + n + '"]').classList.add('active');
+    current = n;
+    $('backBtn').style.display = n === 1 ? 'none' : 'block';
+    $('progressFill').style.width = (n / totalSteps * 100) + '%';
+    $('progressLabel').textContent = 'Paso ' + n + ' de ' + totalSteps;
+    $('stepError').classList.remove('show');
+    $('nextBtn').textContent = (n === totalSteps) ? 'Solicitar cotización' : 'Siguiente';
+    validateStep();
+  }
+
+  $('backBtn').addEventListener('click', function(){ if (current > 1) goToStep(current - 1); });
+
+  $('nextBtn').addEventListener('click', function(){
+    if (!validateStep({ mostrarErrores: true })) return;
+    if (current < totalSteps) {
+      goToStep(current + 1);
+    } else {
+      submitForm();
+    }
+  });
+
+  function submitForm(){
+    var tipo = radioVal('f_tipo');
+    var payload = {
+      timestamp: new Date().toISOString(),
+      origen: origen,
+      pagina: window.location.href,
+      referrer: document.referrer || '',
+      nombre: $('f_nombre').value.trim(),
+      edad: $('f_edad').value,
+      sexo: radioVal('f_sexo'),
+      localidad: $('f_localidad').value.trim(),
+      celular: limpiarCelular($('f_celular').value),
+      monotributista: radioVal('f_monotributo'),
+      plan: selectedPlan,
+      medicacion: radioVal('f_medicacion'),
+      patologia: radioVal('f_patologia'),
+      tipo_cobertura: tipo,
+      grupo_familiar: tipo === 'Grupo' ? getFamilyData() : [],
+      horario: radioVal('f_horario'),
+      variante: 'B'
+    };
+
+    $('mainForm').style.display = 'none';
+    $('footerNav').style.display = 'none';
+    $('successScreen').classList.add('show');
+
+    var backendConectado = SCRIPT_URL && SCRIPT_URL.indexOf('PEGAR_AQUI') === -1;
+
+    function abrirWhatsapp(link){
+      var btn = $('waFallback');
+      btn.setAttribute('href', link);
+      btn.style.display = 'inline-block';
+    }
+
+    function fallbackNumeroCentral(){
+      var waLink = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(buildSummary());
+      abrirWhatsapp(waLink);
+    }
+
+    if (backendConectado) {
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      })
+        .then(function(r){ return r.json(); })
+        .then(function(res){
+          if (res && res.waLink) {
+            abrirWhatsapp(res.waLink);
+          }
+        })
+        .catch(function(err){
+          fallbackNumeroCentral();
+        });
+    } else {
+      fallbackNumeroCentral();
+    }
+  }
+
+  goToStep(1);
+})();
+</script>
+</body>
+</html>
