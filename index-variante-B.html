@@ -103,6 +103,17 @@
     color: var(--green-dark); font-weight: 600; font-size: 13.5px; padding: 10px; border-radius: 10px;
     width: 100%; cursor: pointer;
   }
+  .toggle-summary {
+    margin-top: 20px; background: none; border: 1.5px solid var(--green-med);
+    color: var(--green-dark); font-weight: 700; font-size: 13.5px; padding: 10px; border-radius: 10px;
+    width: 100%; cursor: pointer;
+  }
+  .summary-box {
+    background: var(--green-light); border: 1.5px solid var(--green-med); border-radius: 12px;
+    padding: 14px; font-size: 13px; white-space: pre-wrap; color: var(--text); line-height: 1.55;
+    margin-top: 10px; display: none;
+  }
+  .summary-box.show { display: block; }
   footer {
     max-width: 480px; margin: 0 auto; background: #fff; border-top: 1px solid var(--border);
     padding: 16px 20px calc(16px + env(safe-area-inset-bottom));
@@ -227,6 +238,9 @@
         <div class="radio-pill" data-value="Tarde">Tarde</div>
         <div class="radio-pill" data-value="Noche">Noche</div>
       </div>
+
+      <button type="button" class="toggle-summary" id="toggleSummaryBtn">Ver resumen de tus datos</button>
+      <div class="summary-box" id="summaryText"></div>
     </section>
 
   </main>
@@ -474,6 +488,13 @@
     $('nextBtn').textContent = (n === totalSteps) ? 'Solicitar cotización' : 'Siguiente';
     validateStep();
   }
+
+  $('toggleSummaryBtn').addEventListener('click', function(){
+    var box = $('summaryText');
+    var abierto = box.classList.toggle('show');
+    box.textContent = abierto ? buildSummary() : '';
+    $('toggleSummaryBtn').textContent = abierto ? 'Ocultar resumen' : 'Ver resumen de tus datos';
+  });
 
   $('backBtn').addEventListener('click', function(){ if (current > 1) goToStep(current - 1); });
 
