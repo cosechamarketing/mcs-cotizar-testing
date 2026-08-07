@@ -103,11 +103,6 @@
     color: var(--green-dark); font-weight: 600; font-size: 13.5px; padding: 10px; border-radius: 10px;
     width: 100%; cursor: pointer;
   }
-  .toggle-summary {
-    margin-top: 20px; background: none; border: 1.5px solid var(--green-med);
-    color: var(--green-dark); font-weight: 700; font-size: 13.5px; padding: 10px; border-radius: 10px;
-    width: 100%; cursor: pointer;
-  }
   .summary-box {
     background: var(--green-light); border: 1.5px solid var(--green-med); border-radius: 12px;
     padding: 14px; font-size: 13px; white-space: pre-wrap; color: var(--text); line-height: 1.55;
@@ -220,12 +215,12 @@
         <button type="button" class="add-family" id="add_family_btn">+ Agregar integrante</button>
       </div>
 
-      <label class="first" style="margin-top: 24px;">¿Alguien de ustedes tiene alguna patología? *</label>
+      <label class="first" id="lbl_patologia" style="margin-top: 24px;">¿Tenés alguna patología? *</label>
       <div class="radio-group" data-radio="f_patologia">
         <div class="radio-pill" data-value="Sí">Sí</div>
         <div class="radio-pill" data-value="No">No</div>
       </div>
-      <label>¿Alguien toma medicación de forma habitual? *</label>
+      <label id="lbl_medicacion">¿Tomás medicación de forma habitual? *</label>
       <div class="radio-group" data-radio="f_medicacion">
         <div class="radio-pill" data-value="Sí">Sí</div>
         <div class="radio-pill" data-value="No">No</div>
@@ -239,8 +234,8 @@
         <div class="radio-pill" data-value="Noche">Noche</div>
       </div>
 
-      <button type="button" class="toggle-summary" id="toggleSummaryBtn">Ver resumen de tus datos</button>
-      <div class="summary-box" id="summaryText"></div>
+      <label class="first" style="margin-top: 24px;">Así vamos a enviar tu solicitud</label>
+      <div class="summary-box show" id="summaryText"></div>
     </section>
 
   </main>
@@ -316,6 +311,13 @@
       if (value !== 'Grupo') {
         $('family_rows').innerHTML = '';
         familyCount = 0;
+      }
+      if (value === 'Grupo') {
+        $('lbl_patologia').textContent = '¿Alguien del grupo tiene alguna patología? *';
+        $('lbl_medicacion').textContent = '¿Alguien del grupo toma medicación de forma habitual? *';
+      } else {
+        $('lbl_patologia').textContent = '¿Tenés alguna patología? *';
+        $('lbl_medicacion').textContent = '¿Tomás medicación de forma habitual? *';
       }
     }
   }
@@ -444,7 +446,13 @@
     } else if (ok) {
       box.classList.remove('show');
     }
+    if (current === 3) renderSummaryBox();
     return ok;
+  }
+
+  function renderSummaryBox(){
+    var box = $('summaryText');
+    if (box) box.textContent = buildSummary();
   }
 
   function buildSummary(){
@@ -469,8 +477,13 @@
       });
     }
     lines.push('');
-    lines.push('Patología en el grupo: ' + radioVal('f_patologia'));
-    lines.push('Medicación habitual en el grupo: ' + radioVal('f_medicacion'));
+    if (tipo === 'Grupo') {
+      lines.push('Patología en el grupo: ' + radioVal('f_patologia'));
+      lines.push('Medicación habitual en el grupo: ' + radioVal('f_medicacion'));
+    } else {
+      lines.push('Patología: ' + radioVal('f_patologia'));
+      lines.push('Medicación habitual: ' + radioVal('f_medicacion'));
+    }
     if (radioVal('f_horario')) {
       lines.push('Horario disponible: ' + radioVal('f_horario'));
     }
@@ -488,13 +501,6 @@
     $('nextBtn').textContent = (n === totalSteps) ? 'Solicitar cotización' : 'Siguiente';
     validateStep();
   }
-
-  $('toggleSummaryBtn').addEventListener('click', function(){
-    var box = $('summaryText');
-    var abierto = box.classList.toggle('show');
-    box.textContent = abierto ? buildSummary() : '';
-    $('toggleSummaryBtn').textContent = abierto ? 'Ocultar resumen' : 'Ver resumen de tus datos';
-  });
 
   $('backBtn').addEventListener('click', function(){ if (current > 1) goToStep(current - 1); });
 
