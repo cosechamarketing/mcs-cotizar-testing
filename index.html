@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-MQMTS7BJ');</script>
+<!-- End Google Tag Manager -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>Cotizá tu plan de salud - Mutual Cosecha Salud</title>
@@ -45,12 +52,11 @@
   header .brand .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green-med); flex-shrink: 0; }
   header .brand span { font-size: 13px; font-weight: 700; letter-spacing: 0.4px; color: var(--green-dark); text-transform: uppercase; }
   header h1 { font-size: 17px; margin: 8px 0 2px; color: var(--text); font-weight: 700; }
-  header p.tag { margin: 0; font-size: 12.5px; color: var(--text-soft); }
   .progress-wrap { padding: 12px 20px 0; }
   .progress-track { height: 6px; background: var(--green-light); border-radius: 4px; overflow: hidden; }
   .progress-fill { height: 100%; background: var(--green-med); border-radius: 4px; transition: width 0.25s ease; }
   .progress-label { font-size: 12px; color: var(--text-soft); margin: 6px 0 0; text-align: right; }
-  main { flex: 1; padding: 18px 20px 104px; }
+  main { flex: 1; padding: 18px 20px 24px; }
   .step { display: none; animation: fadeIn 0.2s ease; }
   .step.active { display: block; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
@@ -72,12 +78,15 @@
   }
   .radio-pill.selected { background: var(--green-dark); border-color: var(--green-dark); color: #fff; }
   .hint { font-size: 12px; color: var(--text-soft); margin-top: 6px; line-height: 1.4; }
-  .callout {
-    background: var(--amber-bg); border: 1px solid var(--amber); border-radius: 10px;
-    padding: 12px 14px; font-size: 12.5px; color: var(--amber); margin-top: 10px; line-height: 1.5;
-  }
   .conditional { display: none; }
   .conditional.show { display: block; }
+  input.invalid, select.invalid { border-color: #9C2B2B !important; background: #FBEAEA !important; }
+  .radio-group.invalid .radio-pill { border-color: #9C2B2B; }
+  .step-error {
+    display: none; background: #FBEAEA; border: 1px solid #9C2B2B; color: #9C2B2B;
+    border-radius: 10px; padding: 10px 12px; font-size: 12.5px; margin-bottom: 14px; line-height: 1.4;
+  }
+  .step-error.show { display: block; }
   .plans { margin-top: 14px; display: flex; flex-direction: column; gap: 10px; }
   .plan-card { border: 1.5px solid var(--border); border-radius: 14px; padding: 14px 15px; cursor: pointer; transition: border-color .15s, background .15s; }
   .plan-card.selected { border-color: var(--green-dark); background: var(--green-light); }
@@ -94,38 +103,35 @@
   .family-card .fc-head span { font-size: 12.5px; font-weight: 700; color: var(--green-dark); }
   .family-remove { background: none; border: none; color: #9C2B2B; font-size: 20px; cursor: pointer; padding: 0 4px; line-height: 1; }
   .family-card input, .family-card select { padding: 9px 10px; font-size: 14px; margin-top: 0; }
-  .fc-grid1 { margin-bottom: 8px; }
-  .fc-grid4 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .fc-grid4 label { font-size: 11.5px; margin: 0 0 4px; }
+  .fc-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .fc-grid2 label { font-size: 11.5px; margin: 0 0 4px; }
   .add-family {
     margin-top: 4px; background: var(--green-light); border: 1.5px dashed var(--green-med);
     color: var(--green-dark); font-weight: 600; font-size: 13.5px; padding: 10px; border-radius: 10px;
     width: 100%; cursor: pointer;
   }
+  .summary-box {
+    background: var(--green-light); border: 1.5px solid var(--green-med); border-radius: 12px;
+    padding: 14px; font-size: 13px; white-space: pre-wrap; color: var(--text); line-height: 1.55;
+    margin-top: 10px; display: none;
+  }
+  .summary-box.show { display: block; }
+  .consent-row { display: flex; align-items: flex-start; gap: 8px; margin-top: 16px; }
+  .consent-row input[type="checkbox"] { margin-top: 3px; width: 18px; height: 18px; flex-shrink: 0; }
+  .consent-row label { margin: 0; font-size: 12.5px; font-weight: 400; color: var(--text-soft); line-height: 1.4; }
   footer {
-    position: fixed; bottom: 0; left: 0; right: 0; max-width: 480px; margin: 0 auto;
-    background: #fff; border-top: 1px solid var(--border);
-    padding: 12px 20px calc(12px + env(safe-area-inset-bottom));
+    max-width: 480px; margin: 0 auto; background: #fff; border-top: 1px solid var(--border);
+    padding: 16px 20px calc(16px + env(safe-area-inset-bottom));
     display: flex; gap: 10px;
   }
   button.nav-btn { flex: 1; padding: 14px; font-size: 15px; font-weight: 700; border-radius: 12px; border: none; cursor: pointer; }
   .btn-back { background: var(--green-light); color: var(--green-dark); }
   .btn-next { background: var(--green-dark); color: #fff; }
-  .btn-next:disabled { background: #C9D6CB; color: #fff; cursor: not-allowed; }
-  input.invalid, select.invalid { border-color: #9C2B2B !important; background: #FBEAEA !important; }
-  .radio-group.invalid .radio-pill { border-color: #9C2B2B; }
-  .step-error {
-    display: none; background: #FBEAEA; border: 1px solid #9C2B2B; color: #9C2B2B;
-    border-radius: 10px; padding: 10px 12px; font-size: 12.5px; margin-bottom: 14px; line-height: 1.4;
-  }
-  .step-error.show { display: block; }
-  .summary-box { background: var(--green-light); border: 1.5px solid var(--green-med); border-radius: 12px; padding: 14px; font-size: 13px; white-space: pre-wrap; color: var(--text); line-height: 1.55; }
   .success { display: none; text-align: center; padding: 60px 24px; }
   .success.show { display: block; }
   .success .check-big { width: 62px; height: 62px; border-radius: 50%; background: var(--green-dark); margin: 0 auto 18px; position: relative; }
   .success .check-big::after { content: ""; position: absolute; left: 21px; top: 14px; width: 12px; height: 24px; border: solid #fff; border-width: 0 3px 3px 0; transform: rotate(45deg); }
   .success h2 { color: var(--green-dark); font-size: 22px; margin: 0 0 14px; }
-  .success p { color: var(--text-soft); font-size: 14px; line-height: 1.5; margin: 0 0 22px; }
   .success .success-msg {
     color: var(--green-dark); font-size: 20px; font-weight: 800; line-height: 1.4;
     margin: 0 0 26px; letter-spacing: 0.2px;
@@ -134,6 +140,10 @@
 </style>
 </head>
 <body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MQMTS7BJ"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 <div class="app">
   <header>
     <div class="brand"><span class="dot"></span><span>Mutual Cosecha Salud</span></div>
@@ -141,8 +151,8 @@
   </header>
 
   <div class="progress-wrap">
-    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:20%"></div></div>
-    <p class="progress-label" id="progressLabel">Paso 1 de 5</p>
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:33.3%"></div></div>
+    <p class="progress-label" id="progressLabel">Paso 1 de 3</p>
   </div>
 
   <main id="mainForm">
@@ -162,7 +172,75 @@
         <div class="radio-pill" data-value="Otro">Otro</div>
       </div>
       <label>Localidad *</label>
-      <input type="text" id="f_localidad" placeholder="Ej: Resistencia">
+      <input type="text" id="f_localidad" list="lista_localidades" autocomplete="off" placeholder="Empezá a escribir...">
+      <datalist id="lista_localidades">
+        <option value="Resistencia">
+        <option value="Barranqueras">
+        <option value="Fontana">
+        <option value="Puerto Vilelas">
+        <option value="Puerto Tirol">
+        <option value="Basail">
+        <option value="Colonia Benítez">
+        <option value="Colonia Popular">
+        <option value="Margarita Belén">
+        <option value="Makallé">
+        <option value="La Leonesa">
+        <option value="La Escondida">
+        <option value="Las Palmas">
+        <option value="Isla del Cerrito">
+        <option value="General Vedia">
+        <option value="Puerto Bermejo">
+        <option value="Puerto Eva Perón">
+        <option value="Lapachito">
+        <option value="Laguna Blanca">
+        <option value="La Verde">
+        <option value="Presidencia Roque Sáenz Peña">
+        <option value="Campo Largo">
+        <option value="Napenay">
+        <option value="Avia Terai">
+        <option value="La Tigra">
+        <option value="Quitilipi">
+        <option value="Machagai">
+        <option value="Concepción del Bermejo">
+        <option value="Los Frentones">
+        <option value="Pampa del Infierno">
+        <option value="Tres Isletas">
+        <option value="Juan José Castelli">
+        <option value="Villa Río Bermejito">
+        <option value="Colonia Aborigen">
+        <option value="General José de San Martín">
+        <option value="Presidencia Roca">
+        <option value="Colonias Unidas">
+        <option value="Capitán Solari">
+        <option value="Las Garcitas">
+        <option value="Laguna Limpia">
+        <option value="Pampa del Indio">
+        <option value="Pampa Almirón">
+        <option value="Selvas del Río de Oro">
+        <option value="Charata">
+        <option value="Las Breñas">
+        <option value="Corzuela">
+        <option value="General Pinedo">
+        <option value="Gancedo">
+        <option value="General Capdevila">
+        <option value="Fortín Las Chuñas">
+        <option value="Mesón de Fierro">
+        <option value="Pampa Landriel">
+        <option value="Villa Ángela">
+        <option value="Villa Berthet">
+        <option value="San Bernardo">
+        <option value="Coronel Du Graty">
+        <option value="Santa Sylvina">
+        <option value="Hermoso Campo">
+        <option value="Enrique Urién">
+        <option value="La Clotilde">
+        <option value="Samuhú">
+        <option value="Chorotis">
+        <option value="Itín">
+        <option value="Pueblo Clodomiro Díaz">
+        <option value="Venados Grandes">
+      </datalist>
+      <p class="hint">Escribí tu localidad, y si te aparece abajo, tocá en el nombre.</p>
       <label>Celular *</label>
       <input type="tel" id="f_celular" inputmode="numeric" placeholder="Ej: 3644123456">
       <p class="hint">Sin 0 ni 15 adelante. Solo código de área + número. Ej: 3644123456</p>
@@ -201,27 +279,12 @@
           <p>Consultas sin necesidad de órdenes. Prácticas y kinesiología 100% sin autorización. Internaciones sin copago.</p>
         </div>
       </div>
-      <p class="hint" id="planHint" style="display:none;">Elegí una opción para continuar.</p>
     </section>
 
     <section class="step" data-step="3">
-      <h2>Un par de datos de salud</h2>
-      <p class="sub">Nos ayuda a orientar mejor la cotización. Auditoría médica revisa el detalle después.</p>
-      <label class="first">¿Consumís medicación de forma habitual? *</label>
-      <div class="radio-group" data-radio="f_medicacion">
-        <div class="radio-pill" data-value="Sí">Sí</div>
-        <div class="radio-pill" data-value="No">No</div>
-      </div>
-      <label>¿Tenés alguna patología? *</label>
-      <div class="radio-group" data-radio="f_patologia">
-        <div class="radio-pill" data-value="Sí">Sí</div>
-        <div class="radio-pill" data-value="No">No</div>
-      </div>
-    </section>
+      <h2>Integrantes y salud</h2>
+      <p class="sub">Últimos datos, simples y rápidos.</p>
 
-    <section class="step" data-step="4">
-      <h2>¿Para quién es la cobertura?</h2>
-      <p class="sub">¿Cuántos integrantes sumás al grupo?</p>
       <label class="first">Tipo de cobertura *</label>
       <div class="radio-group" data-radio="f_tipo">
         <div class="radio-pill" data-value="Unipersonal">Unipersonal</div>
@@ -229,22 +292,37 @@
       </div>
 
       <div class="conditional" id="familia_block">
-        <div id="family_rows" style="margin-top: 14px;"></div>
+        <label class="first" style="margin-top: 14px;">¿Cuántos integrantes sumás al grupo?</label>
+        <div id="family_rows" style="margin-top: 8px;"></div>
         <button type="button" class="add-family" id="add_family_btn">+ Agregar integrante</button>
       </div>
-    </section>
 
-    <section class="step" data-step="5">
-      <h2>Listo para enviar</h2>
-      <p class="sub">Revisá tus datos antes de solicitar la cotización.</p>
-      <label class="first">Horario disponible para contacto (opcional)</label>
+      <label class="first" id="lbl_patologia" style="margin-top: 24px;">¿Tenés alguna patología? *</label>
+      <div class="radio-group" data-radio="f_patologia">
+        <div class="radio-pill" data-value="Sí">Sí</div>
+        <div class="radio-pill" data-value="No">No</div>
+      </div>
+      <label id="lbl_medicacion">¿Tomás medicación de forma habitual? *</label>
+      <div class="radio-group" data-radio="f_medicacion">
+        <div class="radio-pill" data-value="Sí">Sí</div>
+        <div class="radio-pill" data-value="No">No</div>
+      </div>
+
+      <label class="first" style="margin-top: 24px;">Horario disponible para contacto (opcional)</label>
       <div class="radio-group" data-radio="f_horario">
         <div class="radio-pill" data-value="Mañana">Mañana</div>
         <div class="radio-pill" data-value="Mediodía">Mediodía</div>
         <div class="radio-pill" data-value="Tarde">Tarde</div>
         <div class="radio-pill" data-value="Noche">Noche</div>
       </div>
-      <div class="summary-box" id="summaryText"></div>
+
+      <label class="first" style="margin-top: 24px;">Así vamos a enviar tu solicitud</label>
+      <div class="summary-box show" id="summaryText"></div>
+
+      <div class="consent-row">
+        <input type="checkbox" id="f_consentimiento">
+        <label for="f_consentimiento">Acepto que Mutual Cosecha Salud use estos datos, incluidos los de salud, para contactarme y preparar mi cotización. *</label>
+      </div>
     </section>
 
   </main>
@@ -267,7 +345,7 @@
   var WHATSAPP_NUMBER = "5493644000000";
   var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxwWf-AhYeVCXy7KfPVeL2z5fH6si795Ft_Zk1_6kwaPpScJl7T9Du9DiftIASIdv2WbQ/exec";
 
-  var totalSteps = 5;
+  var totalSteps = 3;
   var current = 1;
   var familyCount = 0;
   var selectedPlan = null;
@@ -287,6 +365,7 @@
   $('f_celular').addEventListener('blur', function(){
     this.value = limpiarCelular(this.value);
   });
+  $('f_consentimiento').addEventListener('change', validateStep);
 
   qsa('.radio-group').forEach(function(group){
     var key = group.getAttribute('data-radio');
@@ -317,7 +396,17 @@
     }
     if (key === 'f_tipo') {
       $('familia_block').classList.toggle('show', value === 'Grupo');
-      if (value !== 'Grupo') { $('family_rows').innerHTML = ''; familyCount = 0; }
+      if (value !== 'Grupo') {
+        $('family_rows').innerHTML = '';
+        familyCount = 0;
+      }
+      if (value === 'Grupo') {
+        $('lbl_patologia').textContent = '¿Alguien del grupo tiene alguna patología? *';
+        $('lbl_medicacion').textContent = '¿Alguien del grupo toma medicación de forma habitual? *';
+      } else {
+        $('lbl_patologia').textContent = '¿Tenés alguna patología? *';
+        $('lbl_medicacion').textContent = '¿Tomás medicación de forma habitual? *';
+      }
     }
   }
 
@@ -342,14 +431,17 @@
     card.className = 'family-card';
     card.innerHTML =
       '<div class="fc-head"><span>Integrante</span><button type="button" class="family-remove">&times;</button></div>' +
-      '<div><label>Edad</label><input type="number" class="fam_edad" min="0" max="110"></div>';
+      '<div class="fc-grid2">' +
+        '<div><label>Edad</label><input type="number" class="fam_edad" min="0" max="110"></div>' +
+      '</div>';
     card.querySelector('.family-remove').addEventListener('click', function(){
       card.remove();
       renumberFamilyCards();
       validateStep();
     });
-    qsa('input', card).forEach(function(el){
+    qsa('input, select', card).forEach(function(el){
       el.addEventListener('input', validateStep);
+      el.addEventListener('change', validateStep);
     });
     $('family_rows').appendChild(card);
     renumberFamilyCards();
@@ -359,13 +451,16 @@
 
   function getFamilyData(){
     return qsa('.family-card').map(function(card){
-      return { edad: card.querySelector('.fam_edad').value.trim() };
+      return {
+        edad: card.querySelector('.fam_edad').value.trim()
+      };
     });
   }
 
   function limpiarCelular(v){
     var digits = (v || '').replace(/[^0-9]/g, '');
     if (digits.charAt(0) === '0') digits = digits.substring(1);
+    if (digits.substring(0, 2) === '15') digits = digits.substring(2);
     return digits;
   }
 
@@ -404,13 +499,15 @@
       check('f_sexo', radioVal('f_sexo'), 'Sexo', true);
       check('f_localidad', $('f_localidad').value.trim(), 'Localidad');
       check('f_celular', $('f_celular').value.trim(), 'Celular');
+      var celLimpio = limpiarCelular($('f_celular').value);
+      if ($('f_celular').value.trim() && (celLimpio.length < 9 || celLimpio.length > 10)) {
+        faltantes.push('Celular (revisá que esté completo, sin 0 ni 15)');
+        if (mostrarErrores) marcarInvalido('f_celular', false);
+      }
     } else if (current === 2) {
       check('f_monotributo', radioVal('f_monotributo'), 'Si sos monotributista', true);
       if (radioVal('f_monotributo') && !selectedPlan) faltantes.push('Elegir un plan');
     } else if (current === 3) {
-      check('f_medicacion', radioVal('f_medicacion'), 'Si consumís medicación', true);
-      check('f_patologia', radioVal('f_patologia'), 'Si tenés alguna patología', true);
-    } else if (current === 4) {
       check('f_tipo', radioVal('f_tipo'), 'Tipo de cobertura', true);
       var tipo = radioVal('f_tipo');
       if (tipo === 'Grupo') {
@@ -420,8 +517,8 @@
         } else {
           filas.forEach(function(card, i){
             var edadEl = card.querySelector('.fam_edad');
-            var vacio = !edadEl.value.trim();
-            if (vacio) {
+            var edadVacia = !edadEl.value.trim();
+            if (edadVacia) {
               faltantes.push('Edad del integrante ' + (i + 1));
               if (mostrarErrores) edadEl.classList.add('invalid');
             } else {
@@ -429,6 +526,11 @@
             }
           });
         }
+      }
+      check('f_patologia', radioVal('f_patologia'), 'Patología', true);
+      check('f_medicacion', radioVal('f_medicacion'), 'Medicación', true);
+      if (!$('f_consentimiento').checked) {
+        faltantes.push('Aceptar el uso de tus datos');
       }
     }
 
@@ -441,7 +543,13 @@
     } else if (ok) {
       box.classList.remove('show');
     }
+    if (current === 3) renderSummaryBox();
     return ok;
+  }
+
+  function renderSummaryBox(){
+    var box = $('summaryText');
+    if (box) box.textContent = buildSummary();
   }
 
   function buildSummary(){
@@ -458,9 +566,6 @@
       'Monotributista: ' + radioVal('f_monotributo'),
       'Plan de interés: ' + selectedPlan,
       '',
-      'Medicación habitual: ' + radioVal('f_medicacion'),
-      'Patología: ' + radioVal('f_patologia'),
-      '',
       'Cobertura: ' + tipo
     ];
     if (tipo === 'Grupo') {
@@ -468,8 +573,15 @@
         lines.push('  Integrante ' + (i + 1) + ': ' + f.edad + ' años');
       });
     }
+    lines.push('');
+    if (tipo === 'Grupo') {
+      lines.push('Patología en el grupo: ' + radioVal('f_patologia'));
+      lines.push('Medicación habitual en el grupo: ' + radioVal('f_medicacion'));
+    } else {
+      lines.push('Patología: ' + radioVal('f_patologia'));
+      lines.push('Medicación habitual: ' + radioVal('f_medicacion'));
+    }
     if (radioVal('f_horario')) {
-      lines.push('');
       lines.push('Horario disponible: ' + radioVal('f_horario'));
     }
     return lines.join('\n');
@@ -483,13 +595,11 @@
     $('progressFill').style.width = (n / totalSteps * 100) + '%';
     $('progressLabel').textContent = 'Paso ' + n + ' de ' + totalSteps;
     $('stepError').classList.remove('show');
-    if (n === totalSteps) {
-      $('summaryText').textContent = buildSummary();
-      $('nextBtn').textContent = 'Solicitar cotización';
-    } else {
-      $('nextBtn').textContent = 'Siguiente';
-    }
+    $('nextBtn').textContent = (n === totalSteps) ? 'Solicitar cotización' : 'Siguiente';
     validateStep();
+
+    window.dataLayer = window.dataLayer || [];
+    dataLayer.push({ event: 'paso_formulario', paso: n, variante: 'B' });
   }
 
   $('backBtn').addEventListener('click', function(){ if (current > 1) goToStep(current - 1); });
@@ -522,29 +632,31 @@
       tipo_cobertura: tipo,
       grupo_familiar: tipo === 'Grupo' ? getFamilyData() : [],
       horario: radioVal('f_horario'),
-      variante: 'A'
+      consentimiento: $('f_consentimiento').checked,
+      variante: 'B'
     };
 
-    // La pantalla de confirmación se muestra siempre, de entrada.
     $('mainForm').style.display = 'none';
     $('footerNav').style.display = 'none';
     $('successScreen').classList.add('show');
 
+    window.dataLayer = window.dataLayer || [];
+    dataLayer.push({
+      event: 'cotizacion_enviada',
+      variante: 'B',
+      localidad: $('f_localidad').value.trim(),
+      plan: selectedPlan
+    });
+
     var backendConectado = SCRIPT_URL && SCRIPT_URL.indexOf('PEGAR_AQUI') === -1;
 
     function abrirWhatsapp(link){
-      // No abrimos la ventana en automatico: en varios navegadores de
-      // celular, hacerlo despues de esperar la respuesta del servidor
-      // se interpreta como pop-up no solicitado y lo bloquean. Por eso
-      // dejamos el boton visible para que la persona lo toque ella misma.
       var btn = $('waFallback');
       btn.setAttribute('href', link);
       btn.style.display = 'inline-block';
     }
 
     function fallbackNumeroCentral(){
-      // Mientras no esté conectado el backend (o si falla), todo cae a un
-      // número central único, para no perder el contacto.
       var waLink = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(buildSummary());
       abrirWhatsapp(waLink);
     }
@@ -557,9 +669,6 @@
       })
         .then(function(r){ return r.json(); })
         .then(function(res){
-          // Si el backend asignó una asesora de Resistencia, abrimos WhatsApp
-          // directo a esa asesora. Si no (interior), no se abre nada: el
-          // lead ya quedó guardado en la planilla para trabajarlo manualmente.
           if (res && res.waLink) {
             abrirWhatsapp(res.waLink);
           }
