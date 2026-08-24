@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mutual Cosecha Salud - Contacto</title>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-MQMTS7BJ');</script>
+<!-- End Google Tag Manager -->
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #F5FAF5;
+    color: #2F6B3A;
+    text-align: center;
+    padding: 24px;
+  }
+  .box { max-width: 320px; }
+  .spinner {
+    width: 34px; height: 34px;
+    border: 3px solid #E9F3E8;
+    border-top-color: #2F6B3A;
+    border-radius: 50%;
+    margin: 0 auto 16px;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  p { font-size: 14px; color: #4C8C56; }
+  a.fallback {
+    display: inline-block;
+    margin-top: 16px;
+    background: #2F6B3A;
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MQMTS7BJ"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<div class="box">
+  <div class="spinner"></div>
+  <p>Te estamos conectando con Mutual Cosecha Salud...</p>
+  <a id="fallbackLink" class="fallback" href="#">Si no te redirige, tocá acá</a>
+</div>
+
+<script>
+  // Reparto entre 3 numeros de la delegacion Resistencia.
+  // No hay dato de localidad (viene directo de un anuncio con boton "Enviar WhatsApp"
+  // reemplazado por esta pagina puente), asi que se reparte al azar, en partes iguales.
+  var numeros = [
+    "5493624058011", // Meli
+    "5493624616535", // Fabi
+    "5493624000878"  // Vale
+  ];
+  var elegido = numeros[Math.floor(Math.random() * numeros.length)];
+
+  var mensaje = "Hola! Vi el anuncio de Mutual Cosecha Salud y quiero cotizar mi plan de salud.";
+  var url = "https://wa.me/" + elegido + "?text=" + encodeURIComponent(mensaje);
+
+  // dataLayer para GA4: registra que alguien llego a esta pagina puente
+  // y a que numero fue derivado.
+  window.dataLayer = window.dataLayer || [];
+  dataLayer.push({ event: "whatsapp_redirect", numero_destino: elegido });
+
+  document.getElementById("fallbackLink").href = url;
+
+  setTimeout(function () {
+    window.location.replace(url);
+  }, 300);
+</script>
+</body>
+</html>
