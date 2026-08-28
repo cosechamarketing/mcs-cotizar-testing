@@ -75,6 +75,31 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
  
   document.getElementById("waLink").href = url;
  
+  // Registro en Sheets (pestana "WhatsApp Directo"), en paralelo y sin bloquear
+  // ni demorar la redireccion a WhatsApp. Si falla por cualquier motivo
+  // (red, CORS, lo que sea), no pasa nada: el boton/redireccion de arriba
+  // ya funcionan de forma independiente de esto.
+  try {
+    var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxwWf-AhYeVCXy7KfPVeL2z5fH6si795Ft_Zk1_6kwaPpScJl7T9Du9DiftIASIdv2WbQ/exec";
+    var nombresAsesoras = {
+      "5493624058011": "Meli",
+      "5493624616535": "Fabi",
+      "5493624000878": "Vale"
+    };
+    fetch(SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        tipo: "whatsapp_click",
+        asesora: nombresAsesoras[elegido] || "",
+        numero: elegido,
+        pagina: location.href,
+        referrer: document.referrer || ""
+      }),
+      keepalive: true
+    }).catch(function (err) { /* silencioso: nunca debe afectar la redireccion */ });
+  } catch (err) { /* silencioso */ }
+ 
   // Intento de redireccion automatica (funciona en Android y navegadores
   // completos como Safari/Chrome). En el navegador interno de Instagram
   // en iOS puede no dispararse solo -- por eso el boton de arriba ya esta
@@ -85,3 +110,4 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </script>
 </body>
 </html>
+ 
