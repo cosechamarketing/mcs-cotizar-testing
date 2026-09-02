@@ -12,33 +12,33 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-MQMTS7BJ');</script>
 <!-- End Google Tag Manager -->
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: Arial, sans-serif;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #F5FAF5;
-    color: #2F6B3A;
-    text-align: center;
-    padding: 24px;
-  }
-  .box { max-width: 320px; }
-  .logo { font-size: 20px; font-weight: 800; color: #2F6B3A; margin-bottom: 6px; }
-  p { font-size: 14px; color: #4C8C56; margin-bottom: 18px; }
-  a.cta {
-    display: inline-block;
-    background: #25D366;
-    color: #fff;
-    text-decoration: none;
-    padding: 14px 26px;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: bold;
-    box-shadow: 0 2px 8px rgba(37,211,102,0.35);
-  }
-  small { display: block; margin-top: 14px; color: #8a978c; font-size: 11px; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+font-family: Arial, sans-serif;
+height: 100vh;
+display: flex;
+align-items: center;
+justify-content: center;
+background: #F5FAF5;
+color: #2F6B3A;
+text-align: center;
+padding: 24px;
+}
+.box { max-width: 320px; }
+.logo { font-size: 20px; font-weight: 800; color: #2F6B3A; margin-bottom: 6px; }
+p { font-size: 14px; color: #4C8C56; margin-bottom: 18px; }
+a.cta {
+display: inline-block;
+background: #25D366;
+color: #fff;
+text-decoration: none;
+padding: 14px 26px;
+border-radius: 8px;
+font-size: 16px;
+font-weight: bold;
+box-shadow: 0 2px 8px rgba(37,211,102,0.35);
+}
+small { display: block; margin-top: 14px; color: #8a978c; font-size: 11px; }
 </style>
 </head>
 <body>
@@ -46,68 +46,75 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MQMTS7BJ"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
- 
 <div class="box">
-  <div class="logo">Mutual Cosecha Salud</div>
-  <p>Tocá el botón para escribirnos por WhatsApp y cotizar tu plan.</p>
-  <a id="waLink" class="cta" href="#">💬 Escribinos por WhatsApp</a>
-  <small>Si tu navegador lo permite, te vamos a redirigir automáticamente.</small>
+<div class="logo">Mutual Cosecha Salud</div>
+<p>Tocá el botón para escribirnos por WhatsApp y cotizar tu plan.</p>
+<a id="waLink" class="cta" href="#">💬 Escribinos por WhatsApp</a>
+<small>Si tu navegador lo permite, te vamos a redirigir automáticamente.</small>
 </div>
- 
 <script>
-  // Reparto entre 3 numeros de la delegacion Resistencia.
-  // No hay dato de localidad (viene directo de un anuncio con boton "Enviar WhatsApp"
-  // reemplazado por esta pagina puente), asi que se reparte al azar, en partes iguales.
-  var numeros = [
-    "5493624058011", // Meli
-    "5493624616535", // Fabi
-    "5493624000878"  // Vale
-  ];
-  var elegido = numeros[Math.floor(Math.random() * numeros.length)];
+// Reparto entre 3 numeros de la delegacion Resistencia.
+// No hay dato de localidad (viene directo de un anuncio con boton "Enviar WhatsApp"
+// reemplazado por esta pagina puente), asi que se reparte al azar, en partes iguales.
+var numeros = [
+"5493624058011", // Meli
+"5493624616535", // Fabi
+"5493624000878" // Vale
+];
  
-  var mensaje = "Hola! Vi el anuncio de Mutual Cosecha Salud y quiero cotizar mi plan de salud.";
-  var url = "https://wa.me/" + elegido + "?text=" + encodeURIComponent(mensaje);
+var elegido = numeros[Math.floor(Math.random() * numeros.length)];
+var mensaje = "Hola! Vi el anuncio de Mutual Cosecha Salud y quiero cotizar mi plan de salud.";
+var url = "https://wa.me/" + elegido + "?text=" + encodeURIComponent(mensaje);
  
-  // dataLayer para GA4: registra que alguien llego a esta pagina puente
-  // y a que numero fue derivado.
-  window.dataLayer = window.dataLayer || [];
-  dataLayer.push({ event: "whatsapp_redirect", numero_destino: elegido });
+document.getElementById("waLink").href = url;
  
-  document.getElementById("waLink").href = url;
+var yaRegistrado = false; // evita registrar dos veces (click + redirect automatico)
  
-  // Registro en Sheets (pestana "WhatsApp Directo"), en paralelo y sin bloquear
-  // ni demorar la redireccion a WhatsApp. Si falla por cualquier motivo
-  // (red, CORS, lo que sea), no pasa nada: el boton/redireccion de arriba
-  // ya funcionan de forma independiente de esto.
-  try {
-    var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxwWf-AhYeVCXy7KfPVeL2z5fH6si795Ft_Zk1_6kwaPpScJl7T9Du9DiftIASIdv2WbQ/exec";
-    var nombresAsesoras = {
-      "5493624058011": "Meli",
-      "5493624616535": "Fabi",
-      "5493624000878": "Vale"
-    };
-    fetch(SCRIPT_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({
-        tipo: "whatsapp_click",
-        asesora: nombresAsesoras[elegido] || "",
-        numero: elegido,
-        pagina: location.href,
-        referrer: document.referrer || ""
-      }),
-      keepalive: true
-    }).catch(function (err) { /* silencioso: nunca debe afectar la redireccion */ });
-  } catch (err) { /* silencioso */ }
+function registrarSolicitud() {
+if (yaRegistrado) return;
+yaRegistrado = true;
  
-  // Intento de redireccion automatica (funciona en Android y navegadores
-  // completos como Safari/Chrome). En el navegador interno de Instagram
-  // en iOS puede no dispararse solo -- por eso el boton de arriba ya esta
-  // visible y funcional desde el primer instante, no como respaldo escondido.
-  setTimeout(function () {
-    window.location.href = url;
-  }, 600);
+// dataLayer para GA4 y Meta Pixel: recien ahora, con intencion real confirmada
+// (click del usuario, o tiempo minimo de permanencia que un bot casi nunca espera)
+window.dataLayer = window.dataLayer || [];
+dataLayer.push({ event: "whatsapp_redirect", numero_destino: elegido });
+ 
+// Registro en Sheets (pestana "WhatsApp Directo"), en paralelo y sin bloquear
+// ni demorar la redireccion a WhatsApp. Si falla por cualquier motivo
+// (red, CORS, lo que sea), no pasa nada: el boton/redireccion de arriba
+// ya funcionan de forma independiente de esto.
+try {
+var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxwWf-AhYeVCXy7KfPVeL2z5fH6si795Ft_Zk1_6kwaPpScJl7T9Du9DiftIASIdv2WbQ/exec";
+var nombresAsesoras = {
+"5493624058011": "Meli",
+"5493624616535": "Fabi",
+"5493624000878": "Vale"
+};
+fetch(SCRIPT_URL, {
+method: "POST",
+headers: { "Content-Type": "text/plain;charset=utf-8" },
+body: JSON.stringify({
+tipo: "whatsapp_click",
+asesora: nombresAsesoras[elegido] || "",
+numero: elegido,
+pagina: location.href,
+referrer: document.referrer || ""
+}),
+keepalive: true
+}).catch(function (err) { /* silencioso: nunca debe afectar la redireccion */ });
+} catch (err) { /* silencioso */ }
+}
+ 
+// Se registra SOLO si hay una senal de interaccion real: el usuario toca el
+// boton, o pasa tiempo suficiente como para que una persona haya visto la
+// pantalla (1.2s). Los bots de revision/validacion de enlaces suelen cargar
+// y descartar la pagina en milisegundos, sin ejecutar timers largos ni clicks.
+document.getElementById("waLink").addEventListener("click", registrarSolicitud);
+ 
+setTimeout(function () {
+registrarSolicitud(); // por si el redirect automatico dispara antes que el click
+window.location.href = url;
+}, 1200);
 </script>
 </body>
 </html>
- 
